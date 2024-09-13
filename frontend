@@ -1,0 +1,64 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Analytics Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        input, button { padding: 10px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Healthcare Analytics Dashboard</h1>
+        <h2>Predict Readmission Risk</h2>
+        <form id="predictForm">
+            <label>Age:</label>
+            <input type="number" id="age" required><br>
+            <label>Previous Admissions:</label>
+            <input type="number" id="previous_admissions" required><br>
+            <label>Condition Severity (1-10):</label>
+            <input type="number" id="condition_severity" required><br>
+            <button type="submit">Predict</button>
+        </form>
+        <h3 id="result"></h3>
+
+        <h2>Disease Trends</h2>
+        <div id="trends"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const age = document.getElementById('age').value;
+            const previous_admissions = document.getElementById('previous_admissions').value;
+            const condition_severity = document.getElementById('condition_severity').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ age, previous_admissions, condition_severity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = "Readmission Risk: " + (data.readmission_risk ? "High" : "Low");
+            });
+        });
+
+        fetch('/trends')
+            .then(response => response.json())
+            .then(data => {
+                let trendsHTML = '<ul>';
+                data.forEach(trend => {
+                    trendsHTML += `<li>${trend.disease}: ${trend.outbreak_count} outbreaks</li>`;
+                });
+                trendsHTML += '</ul>';
+                document.getElementById('trends').innerHTML = trendsHTML;
+            });
+    </script>
+</body>
+</html>
