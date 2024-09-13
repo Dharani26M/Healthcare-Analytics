@@ -1,0 +1,6 @@
+disease,outbreak_count,age,previous_admissions,condition_severity,high_risk_readmission
+Flu,10,60,3,7,1
+COVID-19,15,55,2,9,1
+Dengue,5,35,1,5,0
+Flu,8,42,2,6,0
+...
